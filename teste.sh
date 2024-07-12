@@ -51,10 +51,12 @@ for r1_file in "$input_dir"/*_1.{fq,fastq,fastq.gz}; do
         sample_name=$(basename "$r1_file" | sed 's/_1\..*//')
         
         # Constrói o nome do arquivo R2 com base no nome da amostra e várias extensões possíveis
-        r2_file="${input_dir}/${sample_name}_2"{.fq,.fastq,.fq.gz,.fastq.gz}
+        r2_file="${r1_file/_1/_2}"{.fq,.fastq,.fq.gz,.fastq.gz}
         
         if [ -f "$r2_file" ]; then
             echo "Processando $r1_file e $r2_file com fastp ..."
+            echo "Arquivo R1: $r1_file"
+            echo "Arquivo R2: $r2_file"
             
             # Constrói os nomes de saída baseados nos nomes dos arquivos de entrada
             output_paired_r1="$output_dir/${sample_name}_1_fastp.fastq.gz"
@@ -68,6 +70,7 @@ for r1_file in "$input_dir"/*_1.{fq,fastq,fastq.gz}; do
                       "$output_paired_r2" "$output_unpaired_r2"
         else
             echo "Arquivo correspondente R2 não encontrado para $r1_file. Pulando para o próximo."
+            echo $r1_file e $r2_file
         fi
     fi
 done
